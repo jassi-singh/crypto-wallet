@@ -2,6 +2,7 @@ import { StyleSheet, View } from "react-native";
 import React from "react";
 import TopLayout from "./components/TopLayout";
 import BottomLayout from "./components/BottomLayout";
+import { Colors } from "../../constants/colors";
 
 const HomeScreen = () => {
   return (
@@ -18,6 +19,6 @@ const styles = StyleSheet.create({
   screen: {
     height: "100%",
     display: "flex",
-    backgroundColor: "white",
+    backgroundColor: Colors.white,
   },
 });
