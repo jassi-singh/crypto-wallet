@@ -1,15 +1,17 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useEffect } from "react";
 import { Colors } from "../../../constants/colors";
+import { getBalance } from "../../../redux/slices/etherSlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../../redux/store";
+import { ethers } from "ethers";
 
 const Amount = () => {
+  const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
-    getBalance();
+    // dispatch(getBalance());
+    // checkEthers();
   }, []);
-
-  const getBalance = async () => {
-    
-  };
 
   return (
     <View style={styles.balance}>

@@ -1,10 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import tabReducer from "./slices/tabSlice";
+import etherReducer from "./slices/etherSlice";
 
 export const store = configureStore({
   reducer: {
     tabs: tabReducer,
+    ethers: etherReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false }),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

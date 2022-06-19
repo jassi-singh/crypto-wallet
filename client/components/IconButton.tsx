@@ -7,14 +7,8 @@ import {
 } from "react-native";
 import React from "react";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { IconButtonProps } from "../utils/interfaces";
 
-interface IconButtonProps {
-  onPress: (event: GestureResponderEvent) => void;
-  iconName: string;
-  size: number;
-  color: string;
-  style?: any;
-}
 
 const IconButton = (props: IconButtonProps) => {
   return (

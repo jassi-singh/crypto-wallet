@@ -5,13 +5,25 @@ import Header from "./Header";
 import Amount from "./Amount";
 import { Colors } from "../../../constants/colors";
 import TabButtons from "./TabButtons";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
+import { Tab } from "../../../utils/enums";
 
 const TopLayout = () => {
+  const activeTab = useSelector((state: RootState) => state.tabs.activeTab);
+
   return (
     <View style={styles.container}>
-      <Header address="0xdD2FD4581271e230360230F9337D5c0430Bf44C0" />
-      <Amount />
-      <TabButtons />
+      <Header />
+
+      {activeTab != Tab.accounts &&
+        activeTab != Tab.networks &&
+        activeTab != Tab.transfer && (
+          <View>
+            <Amount />
+            <TabButtons />
+          </View>
+        )}
     </View>
   );
 };
@@ -20,8 +32,8 @@ export default TopLayout;
 
 const styles = StyleSheet.create({
   container: {
-    borderBottomStartRadius: 50,
-    borderBottomEndRadius: 50,
+    borderBottomStartRadius: 30,
+    borderBottomEndRadius: 30,
     paddingHorizontal: 30,
     backgroundColor: Colors.primary,
   },

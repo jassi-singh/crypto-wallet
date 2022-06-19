@@ -5,10 +5,8 @@ import { Tab } from "../utils/enums";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { changeActiveTab } from "../redux/slices/tabSlice";
+import { TabButtonProps } from "../utils/interfaces";
 
-interface TabButtonProps {
-  tab: Tab;
-}
 
 const TabButton = (props: TabButtonProps) => {
   const dispatch = useDispatch();
