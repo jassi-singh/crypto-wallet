@@ -5,10 +5,22 @@ import Button from "../../components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../utils/interfaces";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useDispatch } from "react-redux";
+import { addWallet } from "../../redux/slices/etherSlice";
+import { ethers } from "ethers";
 
 const Startup = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const dispatch = useDispatch();
+
+  const createNewWallet = () => {
+    const wallet = ethers.Wallet.createRandom();
+    console.log("Mnemonic 🔐 : ", wallet.mnemonic.phrase.trim());
+    dispatch(addWallet(wallet));
+    navigation.navigate("CreateAccount",{seedPhrase:wallet.mnemonic.phrase.trim()});
+  };
+
   return (
     <View style={styles.center}>
       <Text style={styles.text}>Metamask Mobile</Text>
@@ -17,13 +29,15 @@ const Startup = () => {
         title="Create Account"
         buttonStyles={styles.button}
         textStyle={styles.buttonText}
-        onPress={() => navigation.navigate("CreateAccount")}
+        onPress={() => createNewWallet()}
       />
       <Button
-        title="Sign  In"
+        title="Import Account"
         buttonStyles={styles.otherButton}
         textStyle={styles.otherButtonText}
-        onPress={() => navigation.navigate("CreateAccount")}
+        onPress={() => {
+          //   navigation.navigate("CreateAccount");
+        }}
       />
     </View>
   );

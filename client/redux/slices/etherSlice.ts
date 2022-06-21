@@ -1,14 +1,14 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import "react-native-get-random-values";
 import "@ethersproject/shims";
-import { ethers } from "ethers";
+import { BigNumber, BigNumberish, ethers, Wallet } from "ethers";
 import { RootState } from "../store";
 import { InitialStateAccount, NetworkInterface } from "../../utils/interfaces";
 
 const initialState: InitialStateAccount = {
   provider: new ethers.providers.JsonRpcProvider(),
   activeAccount: "0xdD2FD4581271e230360230F9337D5c0430Bf44C0",
-  accountBalance: "0",
+  balanceOf: new Map<string, BigNumberish>(),
   activeNetwork: {
     key: "1",
     name: "Mainnet",
@@ -17,18 +17,26 @@ const initialState: InitialStateAccount = {
     RpcUrl: "https://mainnet.infura.io/v3/YOUR_PROJECT_ID",
     currencySymbol: "ETH",
   },
+  wallets: [],
 };
 
 export const getBalance = createAsyncThunk(
   "getBalance",
   async (_, { getState }) => {
     const state = getState() as RootState;
-    console.log(state.ethers.activeAccount);
-    const provider = state.ethers.provider;
-    const bigNum = await provider.getBalance(state.ethers.activeAccount);
-    const balance = ethers.utils.formatEther(bigNum);
-    console.log(balance);
-    return balance;
+    const balanceOf = new Map<string, BigNumber>();
+    const promises: Array<Promise<void>> = [];
+
+    state.ethers.wallets.forEach((wallet) => {
+      const promise = state.ethers.provider
+        .getBalance(wallet.address)
+        .then((balance) => {
+          balanceOf.set(wallet.address, balance);
+        });
+      promises.push(promise);
+    });
+    await Promise.all(promises);
+    return balanceOf;
   }
 );
 
@@ -42,23 +50,34 @@ export const etherSlice = createSlice({
     changeActiveNetwork: (state, action: PayloadAction<NetworkInterface>) => {
       state.activeNetwork = action.payload;
     },
+    addWallet: (state, action: PayloadAction<Wallet>) => {
+      state.wallets.push(action.payload);
+    },
+    removeWallet: (state) => {
+      state.wallets.length = 0;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(
       getBalance.fulfilled,
-      (state, action: PayloadAction<string>) => {
-        console.log("SUCCESS", action.payload);
-        state.accountBalance = action.payload;
+      (state, action: PayloadAction<Map<string, BigNumber>>) => {
+        console.log("SUCCESS 🟢", action.payload);
+        state.balanceOf = action.payload;
       }
     );
     builder.addCase(getBalance.pending, () => {
-      console.log("PENDING.....");
+      console.log("PENDING 🟠");
     });
     builder.addCase(getBalance.rejected, () => {
-      console.log("ERRRO!!!");
+      console.log("ERRRO 🔴");
     });
   },
 });
 // Action creators
-export const { changeActiveAccount, changeActiveNetwork } = etherSlice.actions;
+export const {
+  changeActiveAccount,
+  changeActiveNetwork,
+  addWallet,
+  removeWallet,
+} = etherSlice.actions;
 export default etherSlice.reducer;

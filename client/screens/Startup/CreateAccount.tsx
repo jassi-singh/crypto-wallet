@@ -4,17 +4,19 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../constants/colors";
 import SeedPhraseComponent from "../../components/SeedPhraseComp";
 import Button from "../../components/Button";
-import { useNavigation } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { RootStackParamList } from "../../utils/interfaces";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Helpers from "../../utils/helper";
 import IconButton from "../../components/IconButton";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 const CreateAccount = () => {
-  const seedPhrase =
-    "orb afghan lastly rife playmate needy sparkle calender passer quaggy sienna potency";
+  const route = useRoute<RouteProp<RootStackParamList, "CreateAccount">>();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const seedPhrase = route.params.seedPhrase;
   return (
     <SafeAreaView style={styles.container}>
       <IconButton
@@ -52,9 +54,7 @@ const CreateAccount = () => {
         textStyle={styles.buttonText}
         buttonStyles={styles.button}
         onPress={() =>
-          navigation.replace("ConfirmSeedPhrase", {
-            seedPhrase: seedPhrase,
-          })
+          navigation.replace("ConfirmSeedPhrase", { seedPhrase: seedPhrase })
         }
       />
     </SafeAreaView>

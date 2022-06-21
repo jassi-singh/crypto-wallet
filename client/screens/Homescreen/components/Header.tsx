@@ -8,13 +8,11 @@ import { Colors } from "../../../constants/colors";
 import { useDispatch, useSelector } from "react-redux";
 import { changeActiveTab } from "../../../redux/slices/tabSlice";
 import { Tab } from "../../../utils/enums";
-import { RootState } from "../../../redux/store";
-// import "react-native-get-random-values";
-// import "@ethersproject/shims";
-// import { ethers } from "ethers";
+import { AppDispatch, RootState } from "../../../redux/store";
+import { getBalance } from "../../../redux/slices/etherSlice";
 
 const Header = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const activeAccount = useSelector(
     (state: RootState) => state.ethers.activeAccount
   );
@@ -24,6 +22,7 @@ const Header = () => {
       <View style={styles.row}>
         <TouchableOpacity
           onPress={() => {
+            dispatch(getBalance());
             dispatch(changeActiveTab(Tab.accounts));
           }}
           style={styles.jazzicon}

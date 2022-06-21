@@ -12,9 +12,11 @@ import {
   changeActiveNetwork,
 } from "../../../redux/slices/etherSlice";
 import { NetworkInterface } from "../../../utils/interfaces";
+import { ethers } from "ethers";
 
 const BottomLayout = () => {
   const dispatch = useDispatch();
+  const ethersState = useSelector((state: RootState) => state.ethers);
   const assets = [
     { key: "1", token: "ETH", amount: 0.234, value: 373.33 },
     { key: "2", token: "BTC", amount: 0.234, value: 373.33 },
@@ -56,30 +58,6 @@ const BottomLayout = () => {
       amount: "0.234",
       token: "ETH",
       description: "Contract Interaction",
-    },
-  ];
-
-  const accounts = [
-    {
-      key: "1",
-      address: "0xdD2FD4581271e230360230F9337D5c0430Bf44C0",
-      balance: "0.234",
-      name: "Address 1",
-      isCurrentAccount: false,
-    },
-    {
-      key: "2",
-      address: "0xea4f8f9f8f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f",
-      balance: "0.234",
-      name: "Address 2",
-      isCurrentAccount: true,
-    },
-    {
-      key: "3",
-      address: "0x94ac5f8f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9",
-      balance: "0.234",
-      name: "Address 3",
-      isCurrentAccount: false,
     },
   ];
 
@@ -133,6 +111,7 @@ const BottomLayout = () => {
   const activeNetwork = useSelector(
     (state: RootState) => state.ethers.activeNetwork
   );
+
   const showList = (tab: Tab) => {
     switch (tab) {
       case Tab.networks:
@@ -174,10 +153,10 @@ const BottomLayout = () => {
       case Tab.accounts:
         return (
           <FlatList
-            data={accounts}
+            data={ethersState.wallets}
             contentInsetAdjustmentBehavior="automatic"
             ListFooterComponent={<View style={{ height: 300 }} />}
-            renderItem={({ item }) => (
+            renderItem={({ item, index }) => (
               <ListItem
                 onPress={() => {
                   dispatch(changeActiveAccount(item.address));
@@ -189,8 +168,14 @@ const BottomLayout = () => {
                 }
                 body={
                   <View>
-                    <Text style={styles.title}>{item.name}</Text>
-                    <Text style={styles.subtitle}>{item.balance} ETH</Text>
+                    <Text style={styles.title}>Account {index + 1}</Text>
+                    <Text style={styles.subtitle}>
+                      {ethers.utils.formatEther(
+                        ethersState.balanceOf.get(item.address) ??
+                          ethers.BigNumber.from(0)
+                      )}{" "}
+                      ETH
+                    </Text>
                   </View>
                 }
                 trailing={
@@ -277,9 +262,11 @@ const BottomLayout = () => {
           />
         );
       case Tab.transfer:
-        return <ScrollView>
-          <Text>Send To</Text>
-        </ScrollView>;
+        return (
+          <ScrollView>
+            <Text>Send To</Text>
+          </ScrollView>
+        );
       default:
         return (
           <FlatList

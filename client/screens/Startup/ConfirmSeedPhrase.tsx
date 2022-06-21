@@ -1,27 +1,37 @@
-import { FlatList, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { FlatList, StyleSheet, Text } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../constants/colors";
 import SeedPhraseComponent from "../../components/SeedPhraseComp";
-import {
-  ConfirmSeedPhraseParams,
-  RootStackParamList,
-} from "../../utils/interfaces";
+import { RootStackParamList } from "../../utils/interfaces";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import Button from "../../components/Button";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import Icon from "react-native-vector-icons/MaterialIcons";
 import IconButton from "../../components/IconButton";
+import { useDispatch } from "react-redux";
+
+import { ethers } from "ethers";
 
 const ConfirmSeedPhrase = () => {
   const [sortedSeedPhrase, setSortedSeedPhrase] = useState<Array<string>>([]);
-  const params = useRoute<RouteProp<RootStackParamList>>().params;
-  const seedPhrase = params!.seedPhrase.split(" ").sort();
+  const route = useRoute<RouteProp<RootStackParamList, "ConfirmSeedPhrase">>();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const seedPhrase = route.params.seedPhrase;
+  const dispatch = useDispatch();
 
   const addToPhrase = (phrase: string) => {
     setSortedSeedPhrase([...sortedSeedPhrase, phrase]);
+  };
+
+  const confirmSeedPhrase = () => {
+    const mnemonic = sortedSeedPhrase.toString().replaceAll(",", " ");
+    if (mnemonic === seedPhrase) {
+      const wallet = ethers.Wallet.fromMnemonic(mnemonic);
+      console.log("Wallet Address 🔤: ", wallet.address);
+      navigation.popToTop();
+      navigation.replace("EncryptWallet");
+    }
   };
 
   return (
@@ -60,7 +70,7 @@ const ConfirmSeedPhrase = () => {
         )}
       />
       <FlatList
-        data={seedPhrase}
+        data={seedPhrase.split(" ").sort()}
         scrollEnabled={false}
         numColumns={3}
         renderItem={({ item }) => (
@@ -80,10 +90,7 @@ const ConfirmSeedPhrase = () => {
         textStyle={styles.buttonText}
         buttonStyles={styles.button}
         disabled={sortedSeedPhrase.length !== 12}
-        onPress={() => {
-          navigation.popToTop();
-          navigation.replace("Home");
-        }}
+        onPress={() => confirmSeedPhrase()}
       />
     </SafeAreaView>
   );
