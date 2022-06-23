@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
-import { Colors } from "../constants/colors";
+import { Colors } from "../utils/colors";
 import { SeedPhraseInput } from "../utils/interfaces";
 
 const SeedPhraseComponent = (props: SeedPhraseInput) => {

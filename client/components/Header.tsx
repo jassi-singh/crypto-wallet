@@ -1,20 +1,23 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { Jazzicon } from "react-native-jazzicon/Jazzicon";
-import IconButton from "../../../components/IconButton";
+import IconButton from "./IconButton";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "../../../constants/colors";
+import { Colors } from "../utils/colors";
 import { useDispatch, useSelector } from "react-redux";
-import { changeActiveTab } from "../../../redux/slices/tabSlice";
-import { Tab } from "../../../utils/enums";
-import { AppDispatch, RootState } from "../../../redux/store";
-import { getBalance } from "../../../redux/slices/etherSlice";
+import { toggleDrawer } from "../redux/slices/tabSlice";
+import { DrawerStatus, Tab } from "../utils/enums";
+import { AppDispatch, RootState } from "../redux/store";
+import Helpers from "../utils/helper";
 
 const Header = () => {
   const dispatch = useDispatch<AppDispatch>();
   const activeAccount = useSelector(
     (state: RootState) => state.ethers.activeAccount
+  );
+  const drawerStatus = useSelector(
+    (state: RootState) => state.tabs.drawerStatus
   );
   return (
     <SafeAreaView style={styles.container}>
@@ -22,23 +25,31 @@ const Header = () => {
       <View style={styles.row}>
         <TouchableOpacity
           onPress={() => {
-            dispatch(getBalance());
-            dispatch(changeActiveTab(Tab.accounts));
+            dispatch(toggleDrawer(DrawerStatus.account));
           }}
           style={styles.jazzicon}
         >
-          <Jazzicon size={30} address={activeAccount} />
+          <Jazzicon size={30} address={activeAccount?.address} />
         </TouchableOpacity>
-        <Text style={styles.text}>
-          {activeAccount.substring(0, 6)}...{activeAccount.substring(37)}
-        </Text>
+        <TouchableOpacity
+          style={styles.row}
+          onPress={async () => {
+            await Helpers.copyToClipboard(activeAccount!.address);
+          }}
+        >
+          <Text style={styles.text}>
+            {activeAccount?.address.substring(0, 6)}...
+            {activeAccount?.address.substring(37)}
+          </Text>
+          <Icon name="content-copy" size={20} color={Colors.white} />
+        </TouchableOpacity>
       </View>
 
       {/* Menu and network button */}
       <View style={styles.row}>
         <TouchableOpacity
           onPress={() => {
-            dispatch(changeActiveTab(Tab.networks));
+            dispatch(toggleDrawer(DrawerStatus.network));
           }}
         >
           <Icon name="language" size={25} color="#fff" />
@@ -51,10 +62,14 @@ const Header = () => {
         </TouchableOpacity>
         <IconButton
           style={{ paddingLeft: 20 }}
-          iconName="menu"
+          iconName={drawerStatus !== DrawerStatus.closed ? "close" : "menu"}
           size={25}
           color="#fff"
-          onPress={() => {}}
+          onPress={() => {
+            drawerStatus !== DrawerStatus.closed
+              ? dispatch(toggleDrawer(DrawerStatus.closed))
+              : undefined;
+          }}
         />
       </View>
     </SafeAreaView>
@@ -68,12 +83,14 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    paddingHorizontal: 20,
   },
   container: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    backgroundColor: Colors.primary,
   },
   text: {
     paddingLeft: 10,

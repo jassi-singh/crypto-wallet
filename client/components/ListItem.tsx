@@ -6,7 +6,7 @@ import {
   View,
 } from "react-native";
 import React, { ReactElement } from "react";
-import { Colors } from "../constants/colors";
+import { Colors } from "../utils/colors";
 import { ListItemProps } from "../utils/interfaces";
 
 

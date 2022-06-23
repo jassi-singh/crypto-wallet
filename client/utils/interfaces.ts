@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 import { GestureResponderEvent } from "react-native";
 import { JsonRpcProvider } from "@ethersproject/providers";
-import { Tab } from "./enums";
+import { DrawerStatus, Tab } from "./enums";
 import { BigNumber, BigNumberish, Wallet } from "ethers";
 
 export type RootStackParamList = {
@@ -12,6 +12,7 @@ export type RootStackParamList = {
   ConfirmSeedPhrase: CreateAccountProps;
   EncryptWallet: undefined;
   Login: LoginScreenProps;
+  SendScreen: undefined;
 };
 
 export interface ButtonProps {
@@ -43,7 +44,7 @@ export interface ListItemProps {
 
 export interface InitialStateAccount {
   provider: JsonRpcProvider;
-  activeAccount: string;
+  activeAccount?: Wallet;
   balanceOf: Map<string, BigNumberish>;
   activeNetwork: NetworkInterface;
   wallets: Array<Wallet>;
@@ -59,6 +60,7 @@ export interface NetworkInterface {
 
 export interface TabState {
   activeTab: Tab;
+  drawerStatus: DrawerStatus;
 }
 
 export interface SeedPhraseInput {
@@ -79,6 +81,7 @@ export interface MyInputFieldProps {
   secureTextEntry?: boolean;
   iconName?: string;
   onIconPress?: (event: GestureResponderEvent) => void;
+  placeholder: string;
 }
 
 export interface LoginScreenProps {

@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import { Colors } from "../../constants/colors";
+import { Colors } from "../../utils/colors";
 import Button from "../../components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../utils/interfaces";

@@ -1,22 +1,24 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "../../constants/colors";
+import { Colors } from "../../utils/colors";
 import MyInputField from "../../components/MyInputField";
 import Button from "../../components/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
+import { AppDispatch, RootState } from "../../redux/store";
 import Helpers from "../../utils/helper";
 import { ACCOUNTS_LENGTH, ENCRYPTED_WALLET_KEY } from "../../utils/constants";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../utils/interfaces";
+import { changeActiveAccount } from "../../redux/slices/etherSlice";
 
 const EncryptWallet = () => {
   const [password, onChangePassword] = React.useState("");
   const [confirmPassword, onChangeConfirmPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(true);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(true);
+  const dispatch = useDispatch<AppDispatch>();
   const wallets = useSelector((state: RootState) => state.ethers.wallets);
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -24,6 +26,7 @@ const EncryptWallet = () => {
     if (password === confirmPassword) {
       console.log("Passwords matches 👏");
       const encryptedWallet = await wallets[0].encrypt(password);
+      dispatch(changeActiveAccount(wallets[0]));
       Helpers.storeData(ENCRYPTED_WALLET_KEY, encryptedWallet).then(
         async () => {
           await Helpers.storeData(ACCOUNTS_LENGTH, wallets.length.toString());
@@ -40,6 +43,7 @@ const EncryptWallet = () => {
       <MyInputField
         secureTextEntry={showPassword}
         label="Password"
+        placeholder="Enter Password"
         value={password}
         onChangeText={onChangePassword}
         iconName={showPassword ? "visibility-off" : "visibility"}
@@ -49,6 +53,7 @@ const EncryptWallet = () => {
       <MyInputField
         secureTextEntry={showConfirmPassword}
         label="Confirm Password"
+        placeholder="Confirm Password"
         value={confirmPassword}
         onChangeText={onChangeConfirmPassword}
         iconName={showConfirmPassword ? "visibility-off" : "visibility"}

@@ -4,10 +4,13 @@ import "@ethersproject/shims";
 import { BigNumber, BigNumberish, ethers, Wallet } from "ethers";
 import { RootState } from "../store";
 import { InitialStateAccount, NetworkInterface } from "../../utils/interfaces";
+import Helpers from "../../utils/helper";
+import { ACCOUNTS_LENGTH } from "../../utils/constants";
+import { changeActiveTab } from "./tabSlice";
 
 const initialState: InitialStateAccount = {
   provider: new ethers.providers.JsonRpcProvider(),
-  activeAccount: "0xdD2FD4581271e230360230F9337D5c0430Bf44C0",
+  activeAccount: undefined,
   balanceOf: new Map<string, BigNumberish>(),
   activeNetwork: {
     key: "1",
@@ -44,7 +47,7 @@ export const etherSlice = createSlice({
   name: "ethers",
   initialState: initialState,
   reducers: {
-    changeActiveAccount: (state, action: PayloadAction<string>) => {
+    changeActiveAccount: (state, action: PayloadAction<Wallet>) => {
       state.activeAccount = action.payload;
     },
     changeActiveNetwork: (state, action: PayloadAction<NetworkInterface>) => {
@@ -52,6 +55,7 @@ export const etherSlice = createSlice({
     },
     addWallet: (state, action: PayloadAction<Wallet>) => {
       state.wallets.push(action.payload);
+      Helpers.storeData(ACCOUNTS_LENGTH, state.wallets.length.toString());
     },
     removeWallet: (state) => {
       state.wallets.length = 0;

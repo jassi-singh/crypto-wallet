@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "../../constants/colors";
+import { Colors } from "../../utils/colors";
 import Button from "../../components/Button";
 import MyInputField from "../../components/MyInputField";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { RootStackParamList } from "../../utils/interfaces";
 import { ethers } from "ethers";
 import { useDispatch } from "react-redux";
-import { addWallet } from "../../redux/slices/etherSlice";
+import { addWallet, changeActiveAccount } from "../../redux/slices/etherSlice";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Helpers from "../../utils/helper";
 import { ACCOUNTS_LENGTH } from "../../utils/constants";
@@ -22,24 +22,26 @@ const LoginScreen = () => {
   const route = useRoute<RouteProp<RootStackParamList, "Login">>();
   const unlockWallet = async () => {
     const encryptedWalletJson = route.params.encryptedWalletJson;
-    const mainWallet = await ethers.Wallet.fromEncryptedJson(
-      encryptedWalletJson,
-      password
-    );
-    dispatch(addWallet(mainWallet));
-    const accountsLength = await Helpers.getData(ACCOUNTS_LENGTH);
-    console.log(accountsLength);
-    for (var i = 1; i < parseInt(accountsLength!); i++) {
-      const seedPhrase = mainWallet.mnemonic.phrase;
-      const derivePath = mainWallet.mnemonic.path.slice(0, -1);
-      const hdNode = ethers.utils.HDNode.fromMnemonic(seedPhrase).derivePath(
-        derivePath + i.toString()
-      );
-      console.log(hdNode);
-      const wallet = new ethers.Wallet(hdNode.privateKey);
-      dispatch(addWallet(wallet));
-    }
-    navigation.navigate("Home");
+    await ethers.Wallet.fromEncryptedJson(encryptedWalletJson, password)
+      .then(async (mainWallet) => {
+        const accountsLength = await Helpers.getData(ACCOUNTS_LENGTH);
+        dispatch(addWallet(mainWallet));
+        dispatch(changeActiveAccount(mainWallet));
+        for (var i = 1; i < parseInt(accountsLength!); i++) {
+          const seedPhrase = mainWallet.mnemonic.phrase;
+          const derivePath = mainWallet.mnemonic.path.slice(0, -1);
+          const hdNode = ethers.utils.HDNode.fromMnemonic(
+            seedPhrase
+          ).derivePath(derivePath + i.toString());
+          const wallet = new ethers.Wallet(hdNode.privateKey);
+          dispatch(addWallet(wallet));
+        }
+        navigation.navigate("Home");
+      })
+      .catch((error) => {
+        Helpers.showAlertToast("Wrong Password");
+        throw error;
+      });
   };
 
   return (
@@ -48,6 +50,7 @@ const LoginScreen = () => {
         Enter Your Password To{"\n"}Unlock Your Wallet
       </Text>
       <MyInputField
+        placeholder="Enter Password"
         secureTextEntry={showPassword}
         label="Password"
         value={password}

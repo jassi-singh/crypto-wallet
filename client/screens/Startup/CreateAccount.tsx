@@ -1,7 +1,7 @@
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "../../constants/colors";
+import { Colors } from "../../utils/colors";
 import SeedPhraseComponent from "../../components/SeedPhraseComp";
 import Button from "../../components/Button";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";

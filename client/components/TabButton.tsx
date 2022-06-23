@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
-import { Colors } from "../constants/colors";
+import { Colors } from "../utils/colors";
 import { Tab } from "../utils/enums";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";

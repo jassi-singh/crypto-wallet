@@ -1,7 +1,7 @@
 import { FlatList, StyleSheet, Text } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "../../constants/colors";
+import { Colors } from "../../utils/colors";
 import SeedPhraseComponent from "../../components/SeedPhraseComp";
 import { RootStackParamList } from "../../utils/interfaces";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";

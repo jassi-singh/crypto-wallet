@@ -1,13 +1,13 @@
 import { PayloadAction } from "@reduxjs/toolkit";
-import { Tab } from "../../utils/enums";
-
-const initialState = {
-  activeTab: Tab.assets,
-} as TabState;
-
+import { DrawerStatus, Tab } from "../../utils/enums";
 import { createSlice } from "@reduxjs/toolkit";
-import { changeActiveAccount, changeActiveNetwork } from "./etherSlice";
 import { TabState } from "../../utils/interfaces";
+
+const initialState: TabState = {
+  activeTab: Tab.assets,
+  drawerStatus: DrawerStatus.closed,
+};
+
 export const tabSlice = createSlice({
   name: "tabs",
   initialState: initialState,
@@ -15,17 +15,13 @@ export const tabSlice = createSlice({
     changeActiveTab: (state, action: PayloadAction<Tab>) => {
       state.activeTab = action.payload;
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(changeActiveAccount, (state) => {
-        state.activeTab = Tab.assets;
-      })
-      .addCase(changeActiveNetwork, (state) => {
-        state.activeTab = Tab.assets;
-      });
+    toggleDrawer: (state, action: PayloadAction<DrawerStatus>) => {
+      if (state.drawerStatus !== action.payload)
+        state.drawerStatus = action.payload;
+      else state.drawerStatus = DrawerStatus.closed;
+    },
   },
 });
 // Action creators
-export const { changeActiveTab } = tabSlice.actions;
+export const { changeActiveTab, toggleDrawer } = tabSlice.actions;
 export default tabSlice.reducer;

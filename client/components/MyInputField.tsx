@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import React from "react";
-import { Colors } from "../constants/colors";
+import { Colors } from "../utils/colors";
 import { MyInputFieldProps } from "../utils/interfaces";
 import IconButton from "./IconButton";
 
@@ -22,11 +22,10 @@ const MyInputField = (props: MyInputFieldProps) => {
           style={styles.input}
           onChangeText={props.onChangeText}
           value={props.value}
-          placeholder="Enter password"
+          placeholder={props.placeholder}
           selectionColor={Colors.primary}
           autoCapitalize="none"
           secureTextEntry={props.secureTextEntry}
-          textContentType="password"
           autoComplete="off"
         />
       </View>

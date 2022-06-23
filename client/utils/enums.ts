@@ -1,7 +1,10 @@
 export enum Tab {
   assets = "Assets",
   history = "History",
-  accounts = "Accounts",
-  networks = "Networks",
-  transfer = "Transfer",
+}
+
+export enum DrawerStatus {
+  closed = "closed",
+  account = "account",
+  network = "network",
 }

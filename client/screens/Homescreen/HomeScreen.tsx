@@ -1,20 +1,23 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import TopLayout from "./components/TopLayout";
-import BottomLayout from "./components/BottomLayout";
-import { Colors } from "../../constants/colors";
+import ScreenTemplate from "../../components/ScreenTemplate";
+import BottomButtons from "../../components/BottomButtons";
 import Button from "../../components/Button";
-import { useDispatch } from "react-redux";
-import { changeActiveTab } from "../../redux/slices/tabSlice";
-import { Tab } from "../../utils/enums";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../utils/interfaces";
+import { Colors } from "../../utils/colors";
+import Balance from "./components/Balance";
+import TabView from "./components/TabView";
 
 const HomeScreen = () => {
-  const dispatch = useDispatch();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
-    <View style={styles.screen}>
-      <TopLayout />
-      <BottomLayout />
-      <View style={styles.floatingButtons}>
+    <ScreenTemplate>
+      <Balance />
+      <TabView />
+      <BottomButtons>
         <Button
           onPress={() => {}}
           title="Deposit"
@@ -23,33 +26,20 @@ const HomeScreen = () => {
         />
         <Button
           onPress={() => {
-            dispatch(changeActiveTab(Tab.transfer));
+            navigation.navigate("SendScreen");
           }}
           title="Send"
           buttonStyles={styles.buttonTransfer}
           textStyle={styles.textTransfer}
         />
-      </View>
-    </View>
+      </BottomButtons>
+    </ScreenTemplate>
   );
 };
 
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-  screen: {
-    height: "100%",
-    display: "flex",
-    backgroundColor: Colors.white,
-  },
-  floatingButtons: {
-    position: "absolute",
-    bottom: 5,
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    width: "100%",
-  },
   buttonTransfer: {
     backgroundColor: Colors.primary,
     flexGrow: 1,

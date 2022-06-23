@@ -3,24 +3,13 @@ import * as Clipboard from "expo-clipboard";
 import { Platform, Alert, ToastAndroid } from "react-native";
 
 export default class Helpers {
-  static createRandomWallet = async () => {
-
-  }
   static copyToClipboard = async (text: string) => {
     await Clipboard.setStringAsync(text)
       .then(() => {
-        if (Platform.OS === "android") {
-          ToastAndroid.show("Copied to clipboard", ToastAndroid.SHORT);
-        } else {
-          Alert.alert("Copied to clipboard");
-        }
+        this.showAlertToast("Copied to clipboard");
       })
       .catch(() => {
-        if (Platform.OS === "android") {
-          ToastAndroid.show("Error in copying", ToastAndroid.SHORT);
-        } else {
-          Alert.alert("Error in copying");
-        }
+        this.showAlertToast("Error in copying");
       });
   };
 
@@ -40,5 +29,26 @@ export default class Helpers {
       // error reading value
       throw e;
     }
+  };
+
+  static showAlertToast = (msg: string) => {
+    if (Platform.OS === "android") {
+      ToastAndroid.show(msg, ToastAndroid.SHORT);
+    } else {
+      Alert.alert(msg);
+    }
+  };
+
+  static stringToColor = (str: string) => {
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    var colour = "#";
+    for (var i = 0; i < 3; i++) {
+      var value = (hash >> (i * 8)) & 0xff;
+      colour += ("00" + value.toString(16)).substr(-2);
+    }
+    return colour;
   };
 }
