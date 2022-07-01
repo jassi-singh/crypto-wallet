@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import ScreenTemplate from "../../components/ScreenTemplate";
 import BottomButtons from "../../components/BottomButtons";
 import Button from "../../components/Button";
@@ -9,10 +9,25 @@ import { RootStackParamList } from "../../utils/interfaces";
 import { Colors } from "../../utils/colors";
 import Balance from "./components/Balance";
 import TabView from "./components/TabView";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../redux/store";
+import { getBalance } from "../../redux/slices/etherSlice";
+import { ethers } from "ethers";
 
 const HomeScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const dispatch = useDispatch<AppDispatch>();
+  const state = useSelector((state: RootState) => state);
+
+  useEffect(() => {
+    state.ethers.provider.on("block", (blockNumber) => {
+      // Emitted on every block change
+      console.log(blockNumber);
+      dispatch(getBalance());
+    });
+  }, []);
+
   return (
     <ScreenTemplate>
       <Balance />

@@ -9,7 +9,6 @@ import React, { ReactElement } from "react";
 import { Colors } from "../utils/colors";
 import { ListItemProps } from "../utils/interfaces";
 
-
 const ListItem = (props: ListItemProps) => {
   return (
     <TouchableOpacity onPress={props.onPress} style={styles.list}>

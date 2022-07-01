@@ -12,6 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../utils/interfaces";
 import { changeActiveAccount } from "../../redux/slices/etherSlice";
+import IconButton from "../../components/IconButton";
 
 const EncryptWallet = () => {
   const [password, onChangePassword] = React.useState("");
@@ -37,6 +38,19 @@ const EncryptWallet = () => {
       console.log("Passwords doesn't match 👎");
     }
   };
+
+  const visibilityIcon = (
+    showPassword: boolean,
+    setShowPassword: React.Dispatch<React.SetStateAction<boolean>>
+  ) => (
+    <IconButton
+      onPress={() => setShowPassword(!showPassword)}
+      iconName={showPassword ? "visibility-off" : "visibility"}
+      size={20}
+      color={Colors.primary}
+    />
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.heading}>Protect Your Wallet</Text>
@@ -46,8 +60,7 @@ const EncryptWallet = () => {
         placeholder="Enter Password"
         value={password}
         onChangeText={onChangePassword}
-        iconName={showPassword ? "visibility-off" : "visibility"}
-        onIconPress={() => setShowPassword(!showPassword)}
+        trailing={visibilityIcon(showPassword, setShowPassword)}
       />
       <View style={{ margin: 10 }} />
       <MyInputField
@@ -56,8 +69,7 @@ const EncryptWallet = () => {
         placeholder="Confirm Password"
         value={confirmPassword}
         onChangeText={onChangeConfirmPassword}
-        iconName={showConfirmPassword ? "visibility-off" : "visibility"}
-        onIconPress={() => setShowConfirmPassword(!showConfirmPassword)}
+        trailing={visibilityIcon(showConfirmPassword, setShowConfirmPassword)}
       />
       <Button
         textStyle={styles.buttonText}
@@ -76,7 +88,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 30,
     paddingTop: 30,
-    backgroundColor: Colors.gray,
+    backgroundColor: Colors.white,
   },
   heading: {
     color: Colors.primary,

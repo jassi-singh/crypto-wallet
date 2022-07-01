@@ -14,7 +14,7 @@ import SplashScreen from "./screens/Splash/SplashScreen";
 import SendScreen from "./screens/Send/SendScreen";
 import Header from "./components/Header";
 import HomeScreen from "./screens/HomeScreen/HomeScreen";
-
+import SendConfirmation from "./screens/Send/SendConfirmation";
 
 export default function App() {
   const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -58,6 +58,10 @@ export default function App() {
             />
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="SendScreen" component={SendScreen} />
+            <Stack.Screen
+              name="SendConfirmation"
+              component={SendConfirmation}
+            />
           </Stack.Navigator>
         </SafeAreaProvider>
       </NavigationContainer>

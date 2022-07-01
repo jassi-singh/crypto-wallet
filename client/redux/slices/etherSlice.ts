@@ -6,7 +6,6 @@ import { RootState } from "../store";
 import { InitialStateAccount, NetworkInterface } from "../../utils/interfaces";
 import Helpers from "../../utils/helper";
 import { ACCOUNTS_LENGTH } from "../../utils/constants";
-import { changeActiveTab } from "./tabSlice";
 
 const initialState: InitialStateAccount = {
   provider: new ethers.providers.JsonRpcProvider(),
@@ -48,7 +47,7 @@ export const etherSlice = createSlice({
   initialState: initialState,
   reducers: {
     changeActiveAccount: (state, action: PayloadAction<Wallet>) => {
-      state.activeAccount = action.payload;
+      state.activeAccount = action.payload.connect(state.provider);
     },
     changeActiveNetwork: (state, action: PayloadAction<NetworkInterface>) => {
       state.activeNetwork = action.payload;
@@ -62,19 +61,20 @@ export const etherSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(
-      getBalance.fulfilled,
-      (state, action: PayloadAction<Map<string, BigNumber>>) => {
-        console.log("SUCCESS 🟢", action.payload);
-        state.balanceOf = action.payload;
-      }
-    );
-    builder.addCase(getBalance.pending, () => {
-      console.log("PENDING 🟠");
-    });
-    builder.addCase(getBalance.rejected, () => {
-      console.log("ERRRO 🔴");
-    });
+    builder
+      .addCase(
+        getBalance.fulfilled,
+        (state, action: PayloadAction<Map<string, BigNumber>>) => {
+          console.log("SUCCESS 🟢", action.payload);
+          state.balanceOf = action.payload;
+        }
+      )
+      .addCase(getBalance.pending, () => {
+        console.log("PENDING 🟠");
+      })
+      .addCase(getBalance.rejected, () => {
+        console.log("ERRRO 🔴");
+      });
   },
 });
 // Action creators

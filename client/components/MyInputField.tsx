@@ -9,15 +9,7 @@ const MyInputField = (props: MyInputFieldProps) => {
     <View>
       <Text style={styles.label}>{props.label}</Text>
       <View style={{ justifyContent: "center" }}>
-        {props.iconName && (
-          <IconButton
-            onPress={props.onIconPress!}
-            iconName={props.iconName}
-            size={20}
-            color={Colors.primary}
-            style={{ position: "absolute", zIndex: 1, right: 10 }}
-          />
-        )}
+        <View style={styles.trailing}>{props.trailing}</View>
         <TextInput
           style={styles.input}
           onChangeText={props.onChangeText}
@@ -41,8 +33,9 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     backgroundColor: Colors.white,
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowOffset: { height: 3, width: 3 },
+    shadowRadius: 5,
     color: Colors.primary,
     letterSpacing: 2,
   },
@@ -52,4 +45,5 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     margin: 16,
   },
+  trailing: { position: "absolute", zIndex: 1, right: 10 },
 });

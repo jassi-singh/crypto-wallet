@@ -12,6 +12,7 @@ import { addWallet, changeActiveAccount } from "../../redux/slices/etherSlice";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Helpers from "../../utils/helper";
 import { ACCOUNTS_LENGTH } from "../../utils/constants";
+import IconButton from "../../components/IconButton";
 
 const LoginScreen = () => {
   const [password, onChangePassword] = React.useState("");
@@ -44,6 +45,15 @@ const LoginScreen = () => {
       });
   };
 
+  const visibilityIcon = () => (
+    <IconButton
+      onPress={() => setShowPassword(!showPassword)}
+      iconName={showPassword ? "visibility-off" : "visibility"}
+      size={20}
+      color={Colors.primary}
+    />
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.heading}>
@@ -55,8 +65,7 @@ const LoginScreen = () => {
         label="Password"
         value={password}
         onChangeText={onChangePassword}
-        iconName={showPassword ? "visibility-off" : "visibility"}
-        onIconPress={() => setShowPassword(!showPassword)}
+        trailing={visibilityIcon()}
       />
       <Button
         textStyle={styles.buttonText}
@@ -76,7 +85,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 30,
     paddingTop: 30,
-    backgroundColor: Colors.gray,
+    backgroundColor: Colors.white,
   },
   heading: {
     color: Colors.primary,

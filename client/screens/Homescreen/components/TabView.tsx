@@ -6,122 +6,18 @@ import { Colors } from "../../../utils/colors";
 import ListItem from "../../../components/ListItem";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import Assets from "./Assets";
+import History from "./History";
 
 const TabView = () => {
-  const assets = [
-    { key: "1", token: "ETH", amount: 0.234, value: 373.33 },
-    { key: "2", token: "BTC", amount: 0.234, value: 373.33 },
-    { key: "3", token: "LTC", amount: 0.234, value: 373.33 },
-    { key: "4", token: "XRP", amount: 0.234, value: 373.33 },
-    { key: "5", token: "BCH", amount: 0.234, value: 373.33 },
-    { key: "6", token: "EOS", amount: 0.234, value: 373.33 },
-    { key: "7", token: "XLM", amount: 0.234, value: 373.33 },
-    { key: "8", token: "ADA", amount: 0.234, value: 373.33 },
-    { key: "9", token: "TRX", amount: 0.234, value: 373.33 },
-    { key: "10", token: "NEO", amount: 0.234, value: 373.33 },
-    { key: "11", token: "XMR", amount: 0.234, value: 373.33 },
-    { key: "12", token: "IOTA", amount: 0.234, value: 373.33 },
-    { key: "13", token: "XVG", amount: 0.234, value: 373.33 },
-    { key: "14", token: "ETC", amount: 0.234, value: 373.33 },
-  ];
-
-  const transactionHistory = [
-    {
-      key: "1",
-      status: "Success",
-      date: "12/12/2019",
-      amount: "0.234",
-      token: "ETH",
-      description: "Contract Interaction",
-    },
-    {
-      key: "2",
-      status: "Pending",
-      date: "12/12/2019",
-      amount: "0.234",
-      token: "ETH",
-      description: "Contract Interaction",
-    },
-    {
-      key: "3",
-      status: "Failed",
-      date: "12/12/2019",
-      amount: "0.234",
-      token: "ETH",
-      description: "Contract Interaction",
-    },
-  ];
-
   const activeTab = useSelector((state: RootState) => state.tabs.activeTab);
 
   const showList = (tab: Tab) => {
     switch (tab) {
       case Tab.assets:
-        return (
-          <FlatList
-            data={assets}
-            contentInsetAdjustmentBehavior="automatic"
-            renderItem={({ item }) => (
-              <ListItem
-                leading={
-                  <View style={styles.icon}>
-                    <Text>{item.token[0]}</Text>
-                  </View>
-                }
-                body={
-                  <View>
-                    <Text style={styles.title}>
-                      {item.amount} {item.token}
-                    </Text>
-                    <Text style={styles.subtitle}>${item.value}</Text>
-                  </View>
-                }
-              />
-            )}
-          />
-        );
+        return <Assets />;
       case Tab.history:
-        return (
-          <FlatList
-            data={transactionHistory}
-            renderItem={({ item }) => (
-              <ListItem
-                leading={
-                  <View style={styles.icon}>
-                    <Text>{item.token[0]}</Text>
-                  </View>
-                }
-                body={
-                  <View>
-                    <Text style={styles.title}>{item.description}</Text>
-                    <View style={styles.row}>
-                      <Text
-                        style={[
-                          styles.status,
-                          {
-                            backgroundColor:
-                              item.status.toLowerCase() === "success"
-                                ? Colors.success
-                                : item.status.toLowerCase() === "pending"
-                                ? Colors.pending
-                                : Colors.failed,
-                          },
-                        ]}
-                      >
-                        {item.status.toUpperCase()}
-                      </Text>
-                    </View>
-                  </View>
-                }
-                trailing={
-                  <Text>
-                    - {item.amount} {item.token}
-                  </Text>
-                }
-              />
-            )}
-          />
-        );
+        return <History />;
     }
   };
   return (
@@ -140,6 +36,7 @@ export default TabView;
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
+    height: "70%",
   },
   icon: {
     marginRight: 30,
@@ -175,7 +72,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
   },
   tabView: {
-    paddingBottom: 300,
+    // paddingBottom: 300,
     backgroundColor: Colors.white,
   },
 });

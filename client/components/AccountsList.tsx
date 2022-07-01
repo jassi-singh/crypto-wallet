@@ -5,10 +5,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
 import { ethers } from "ethers";
-import {
-  addWallet,
-  changeActiveAccount,
-} from "../redux/slices/etherSlice";
+import { addWallet, changeActiveAccount } from "../redux/slices/etherSlice";
 import Jazzicon from "react-native-jazzicon";
 import { Colors } from "../utils/colors";
 import ImportWalletDialog from "../dialogBoxes/ImportWalletDialog";
@@ -28,13 +25,12 @@ const AccountsList = () => {
     const wallet = new ethers.Wallet(hdNode.privateKey);
     dispatch(addWallet(wallet));
   };
-      console.log(ethersState.provider.pollingInterval)
 
   return (
     <View style={styles.container}>
       <FlatList
         data={ethersState.wallets}
-        contentInsetAdjustmentBehavior="automatic"
+        style={{ height: "75%" }}
         renderItem={({ item, index }) => (
           <ListItem
             onPress={() => {
@@ -58,7 +54,7 @@ const AccountsList = () => {
               </View>
             }
             trailing={
-              item === ethersState.activeAccount ? (
+              item.address === ethersState.activeAccount?.address ? (
                 <View>
                   <Icon name="check-circle" size={24} color={Colors.primary} />
                 </View>
@@ -89,10 +85,7 @@ const AccountsList = () => {
           body={<Text style={styles.title}>Import Account</Text>}
         />
       </View>
-      <ImportWalletDialog
-        visible={visible}
-        setVisible={setVisible}
-      />
+      <ImportWalletDialog visible={visible} setVisible={setVisible} />
     </View>
   );
 };

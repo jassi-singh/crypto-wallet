@@ -13,6 +13,18 @@ export default class Helpers {
       });
   };
 
+  static getCopyText = async () => {
+    return Clipboard.getStringAsync()
+      .then((text) => {
+        console.log(text);
+        return text;
+      })
+      .catch((e) => {
+        console.log(e);
+        return "";
+      });
+  };
+
   static storeData = async (key: string, value: string) => {
     try {
       await AsyncStorage.setItem(key, value);

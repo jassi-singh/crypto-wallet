@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, ReactNode } from "react";
 import { GestureResponderEvent } from "react-native";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { DrawerStatus, Tab } from "./enums";
@@ -13,6 +13,7 @@ export type RootStackParamList = {
   EncryptWallet: undefined;
   Login: LoginScreenProps;
   SendScreen: undefined;
+  SendConfirmation: SendConfirmationProps;
 };
 
 export interface ButtonProps {
@@ -79,9 +80,8 @@ export interface MyInputFieldProps {
   value: string;
   onChangeText: (text: string) => void;
   secureTextEntry?: boolean;
-  iconName?: string;
-  onIconPress?: (event: GestureResponderEvent) => void;
   placeholder: string;
+  trailing?: ReactNode;
 }
 
 export interface LoginScreenProps {
@@ -89,4 +89,9 @@ export interface LoginScreenProps {
 }
 export interface CreateAccountProps {
   seedPhrase: string;
+}
+
+export interface SendConfirmationProps {
+  recieverAddress: string;
+  amount: string;
 }
