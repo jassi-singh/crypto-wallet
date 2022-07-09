@@ -5,13 +5,17 @@ import { Colors } from "../../utils/colors";
 import Button from "../../components/Button";
 import MyInputField from "../../components/MyInputField";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
-import { RootStackParamList } from "../../utils/interfaces";
+import { ImportedToken, RootStackParamList } from "../../utils/interfaces";
 import { ethers } from "ethers";
 import { useDispatch } from "react-redux";
-import { addWallet, changeActiveAccount } from "../../redux/slices/etherSlice";
+import {
+  addWallet,
+  changeActiveAccount,
+  setImportedTokens,
+} from "../../redux/slices/etherSlice";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Helpers from "../../utils/helper";
-import { ACCOUNTS_LENGTH } from "../../utils/constants";
+import { ACCOUNTS_LENGTH, IMPORTED_TOKENS } from "../../utils/constants";
 import IconButton from "../../components/IconButton";
 
 const LoginScreen = () => {
@@ -37,6 +41,12 @@ const LoginScreen = () => {
           const wallet = new ethers.Wallet(hdNode.privateKey);
           dispatch(addWallet(wallet));
         }
+        const importedTokensCache = await Helpers.getData(IMPORTED_TOKENS);
+        const importedTokens: Array<ImportedToken> = JSON.parse(
+          importedTokensCache!
+        );
+
+        dispatch(setImportedTokens(importedTokens));
         navigation.navigate("Home");
       })
       .catch((error) => {

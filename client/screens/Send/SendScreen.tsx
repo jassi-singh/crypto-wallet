@@ -17,15 +17,38 @@ import BottomButtons from "../../components/BottomButtons";
 import Button from "../../components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../utils/interfaces";
+import { ImportedToken, RootStackParamList } from "../../utils/interfaces";
 import IconButton from "../../components/IconButton";
 import Helpers from "../../utils/helper";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { ethers } from "ethers";
+import { ERC20_ABI } from "../../utils/constants";
 
 const SendScreen = () => {
-  const [recieverAddress, setRecieverAddress] = useState<string>("0x2e5F72f15D2De5034c1171E1df7f90e1eA573d31");
+  const [recieverAddress, setRecieverAddress] = useState<string>(
+    "0x2e5F72f15D2De5034c1171E1df7f90e1eA573d31"
+  );
+  const [selectedToken, setSelectedToken] = useState("");
   const [amount, setAmount] = useState("");
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const state = useSelector((state: RootState) => state);
+  const firstAsset: Array<ImportedToken> = [
+    {
+      tokenAddress: "",
+      symbol: "ETH",
+      account: state.ethers.activeAccount?.address!,
+      provider: state.ethers.provider,
+    },
+  ];
+  const assets = firstAsset
+    .concat(state.ethers.importedTokens)
+    .filter((asset) => asset.account === state.ethers.activeAccount?.address)
+    .map((asset) => {
+      return { label: asset.symbol ?? "LINK", value: asset.tokenAddress };
+    });
 
   const pasteButton = () => {
     return (
@@ -56,12 +79,8 @@ const SendScreen = () => {
           <Text style={styles.label}>Asset</Text>
           <RNPickerSelect
             style={pickerSelectStyles}
-            onValueChange={(value) => console.log(value)}
-            items={[
-              { label: "Football", value: "football" },
-              { label: "Baseball", value: "baseball" },
-              { label: "Hockey", value: "hockey" },
-            ]}
+            onValueChange={(value) => setSelectedToken(value)}
+            items={assets}
             Icon={() => {
               return (
                 <Icon
@@ -99,7 +118,11 @@ const SendScreen = () => {
         />
         <Button
           onPress={() => {
-            navigation.replace("SendConfirmation", { recieverAddress, amount });
+            navigation.replace("SendConfirmation", {
+              recieverAddress,
+              amount,
+              selectedToken,
+            });
           }}
           title="Next"
           buttonStyles={styles.buttonPrimary}

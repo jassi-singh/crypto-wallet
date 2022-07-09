@@ -1,54 +1,101 @@
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ListItem from "../../../components/ListItem";
 import { Colors } from "../../../utils/colors";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../../utils/interfaces";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
+import { Contract, ethers } from "ethers";
+import { ERC20_ABI } from "../../../utils/constants";
+import Jazzicon from "react-native-jazzicon";
 
 const Assets = () => {
-  const assets = [
-    { key: "1", token: "ETH", amount: 0.234, value: 373.33 },
-    { key: "2", token: "BTC", amount: 0.234, value: 373.33 },
-    { key: "3", token: "LTC", amount: 0.234, value: 373.33 },
-    { key: "4", token: "XRP", amount: 0.234, value: 373.33 },
-    { key: "5", token: "BCH", amount: 0.234, value: 373.33 },
-    { key: "6", token: "EOS", amount: 0.234, value: 373.33 },
-    { key: "7", token: "XLM", amount: 0.234, value: 373.33 },
-    { key: "8", token: "ADA", amount: 0.234, value: 373.33 },
-    { key: "9", token: "TRX", amount: 0.234, value: 373.33 },
-    { key: "10", token: "NEO", amount: 0.234, value: 373.33 },
-    { key: "11", token: "XMR", amount: 0.234, value: 373.33 },
-    { key: "12", token: "IOTA", amount: 0.234, value: 373.33 },
-    { key: "13", token: "XVG", amount: 0.234, value: 373.33 },
-    { key: "14", token: "ETC", amount: 0.234, value: 373.33 },
-  ];
+  const state = useSelector((state: RootState) => state);
+  const assets = state.ethers.importedTokens
+    .filter((asset) => asset.account === state.ethers.activeAccount?.address)
+    .map(
+      (asset) =>
+        new ethers.Contract(
+          asset.tokenAddress,
+          ERC20_ABI,
+          state.ethers.activeAccount
+        )
+    );
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   return (
-    <FlatList
-      data={assets}
-      contentInset={{ bottom: 100 }}
-      renderItem={({ item }) => (
+    <View style={styles.container}>
+      <FlatList
+        data={assets}
+        ListFooterComponent={<View style={{ height: 150 }}></View>}
+        renderItem={({ item }) => <Token token={item} />}
+      />
+      <View style={{ marginBottom: 150 }}>
         <ListItem
+          onPress={() => navigation.navigate("ImportToken")}
           leading={
             <View style={styles.icon}>
-              <Text>{item.token[0]}</Text>
+              <Icon name="add" size={20} color={Colors.primary} />
             </View>
           }
-          body={
-            <View>
-              <Text style={styles.title}>
-                {item.amount} {item.token}
-              </Text>
-              <Text style={styles.subtitle}>${item.value}</Text>
-            </View>
-          }
+          body={<Text style={styles.title}>Add New Token</Text>}
         />
-      )}
-    />
+      </View>
+    </View>
   );
 };
 
 export default Assets;
 
+function Token(props: { token: Contract }) {
+  const tokenContract = props.token;
+  const [symbol, setSymbol] = useState("");
+  const [amount, setAmount] = useState("");
+  const state = useSelector((state: RootState) => state);
+  const getSymbol = async () => {
+    setSymbol(await tokenContract.symbol());
+  };
+
+  const getAmount = async () => {
+    setAmount(
+      ethers.utils.formatEther(
+        await tokenContract.balanceOf(state.ethers.activeAccount?.address)
+      )
+    );
+  };
+
+  useEffect(() => {
+    getSymbol();
+    getAmount();
+  }, [state.ethers.activeAccount?.address]);
+
+  return (
+    <ListItem
+      leading={
+        <View style={styles.icon}>
+          <Jazzicon size={30} address={tokenContract.address} />
+        </View>
+      }
+      body={
+        <View>
+          <Text style={styles.title}>
+            {amount} {symbol}
+          </Text>
+          {/* <Text style={styles.subtitle}></Text> */}
+        </View>
+      }
+    />
+  );
+}
+
 const styles = StyleSheet.create({
+  container: {
+    height: "100%",
+  },
   icon: {
     marginRight: 30,
     height: 35,

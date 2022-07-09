@@ -15,6 +15,7 @@ import SendScreen from "./screens/Send/SendScreen";
 import Header from "./components/Header";
 import HomeScreen from "./screens/HomeScreen/HomeScreen";
 import SendConfirmation from "./screens/Send/SendConfirmation";
+import ImportToken from "./screens/HomeScreen/components/ImportToken";
 
 export default function App() {
   const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -62,6 +63,7 @@ export default function App() {
               name="SendConfirmation"
               component={SendConfirmation}
             />
+            <Stack.Screen name="ImportToken" component={ImportToken} />
           </Stack.Navigator>
         </SafeAreaProvider>
       </NavigationContainer>

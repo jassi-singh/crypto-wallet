@@ -10,13 +10,16 @@ const Balance = () => {
 
   return (
     <View style={styles.balance}>
-      <Text style={styles.amountUsd}>1000 USD</Text>
-      <Text style={styles.amountToken}>
-        {ethers.utils.formatEther(
-          ethersState.balanceOf.get(ethersState.activeAccount?.address!) ?? "0"
-        )}{" "}
+      <Text style={styles.amountUsd}>
+        {parseFloat(
+          ethers.utils.formatEther(
+            ethersState.balanceOf.get(ethersState.activeAccount?.address!) ??
+              "0"
+          )
+        ).toFixed(2)}{" "}
         ETH
       </Text>
+      <Text style={styles.amountToken}></Text>
     </View>
   );
 };

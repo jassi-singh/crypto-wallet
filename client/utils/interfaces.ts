@@ -2,7 +2,7 @@ import { ReactElement, ReactNode } from "react";
 import { GestureResponderEvent } from "react-native";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { DrawerStatus, Tab } from "./enums";
-import { BigNumber, BigNumberish, Wallet } from "ethers";
+import { BigNumber, BigNumberish, Contract, ethers, Wallet } from "ethers";
 
 export type RootStackParamList = {
   SplashScreen: undefined;
@@ -14,6 +14,7 @@ export type RootStackParamList = {
   Login: LoginScreenProps;
   SendScreen: undefined;
   SendConfirmation: SendConfirmationProps;
+  ImportToken: undefined;
 };
 
 export interface ButtonProps {
@@ -49,6 +50,7 @@ export interface InitialStateAccount {
   balanceOf: Map<string, BigNumberish>;
   activeNetwork: NetworkInterface;
   wallets: Array<Wallet>;
+  importedTokens: Array<ImportedToken>;
 }
 export interface NetworkInterface {
   key: string;
@@ -94,4 +96,12 @@ export interface CreateAccountProps {
 export interface SendConfirmationProps {
   recieverAddress: string;
   amount: string;
+  selectedToken: string;
+}
+
+export interface ImportedToken {
+  tokenAddress: string;
+  symbol?: string;
+  account: string;
+  provider: ethers.providers.Provider;
 }

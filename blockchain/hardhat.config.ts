@@ -26,16 +26,21 @@ const config: HardhatUserConfig = {
   solidity: "0.8.7",
   networks: {
     hardhat: {
+      blockGasLimit: 210000,
       chainId: 31337,
+      forking: {
+        url: process.env.MUMBAI_URL || "",
+        enabled: true,
+      },
     },
-    ropsten: {
-      url: process.env.ROPSTEN_URL || "",
+    mumbai: {
+      url: process.env.MUMBAI_URL || "",
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
   },
   gasReporter: {
-    enabled: process.env.REPORT_GAS !== undefined,
+    enabled: true,
     currency: "USD",
   },
   etherscan: {

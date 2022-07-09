@@ -1,85 +1,97 @@
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Colors } from "../../../utils/colors";
 import ListItem from "../../../components/ListItem";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { ethers } from "ethers";
+import Helpers from "../../../utils/helper";
+import { ERC20_ABI, TRANSACTION_HISTORY } from "../../../utils/constants";
 
 const History = () => {
-  const transactionHistory = [
-    {
-      key: "1",
-      status: "Success",
-      date: "12/12/2019",
-      amount: "0.234",
-      token: "ETH",
-      description: "Contract Interaction",
-    },
-    {
-      key: "2",
-      status: "Pending",
-      date: "12/12/2019",
-      amount: "0.234",
-      token: "ETH",
-      description: "Contract Interaction",
-    },
-    {
-      key: "3",
-      status: "Failed",
-      date: "12/12/2019",
-      amount: "0.234",
-      token: "ETH",
-      description: "Contract Interaction",
-    },
-  ];
+  const [transactionHistory, setTransactionHistory] = useState<
+    Array<ethers.providers.TransactionResponse>
+  >([]);
 
   const state = useSelector((state: RootState) => state);
 
+  const getTransactionHistory = async () => {
+    const transactionHistoryCache = await Helpers.getData(TRANSACTION_HISTORY);
+    console.log(JSON.parse(transactionHistoryCache!));
+    setTransactionHistory(JSON.parse(transactionHistoryCache!));
+  };
+
+  const getAmountPaid = (tx: ethers.providers.TransactionResponse) => {
+    if (tx.data == "0x") return ethers.utils.formatEther(tx.value) + " ETH";
+    else
+      return (
+        ethers.utils.formatEther(
+          new ethers.utils.Interface(ERC20_ABI).decodeFunctionData(
+            "transfer",
+            tx.data
+          )[1]
+        ) + " LINK"
+      );
+  };
+
   useEffect(() => {
-    const provider = state.ethers.provider;
-  
+    getTransactionHistory();
   }, []);
 
   return (
     <FlatList
       data={transactionHistory}
       style={{ height: "100%" }}
-      renderItem={({ item }) => (
-        <ListItem
-          leading={
-            <View style={styles.icon}>
-              <Text>{item.token[0]}</Text>
-            </View>
-          }
-          body={
-            <View>
-              <Text style={styles.title}>{item.description}</Text>
-              <View style={styles.row}>
-                <Text
-                  style={[
-                    styles.status,
-                    {
-                      backgroundColor:
-                        item.status.toLowerCase() === "success"
-                          ? Colors.success
-                          : item.status.toLowerCase() === "pending"
-                          ? Colors.pending
-                          : Colors.failed,
-                    },
-                  ]}
-                >
-                  {item.status.toUpperCase()}
-                </Text>
+      ListFooterComponent={<View style={{ height: 150 }}></View>}
+      renderItem={({ item }) => {
+        if (item.data !== "0x")
+          console.log(
+            ethers.utils.formatEther(
+              new ethers.utils.Interface(ERC20_ABI).decodeFunctionData(
+                "transfer",
+                item.data
+              )[1]
+            )
+          );
+        return (
+          <ListItem
+            leading={
+              <View style={styles.icon}>
+                <Text>{"s"}</Text>
               </View>
-            </View>
-          }
-          trailing={
-            <Text>
-              - {item.amount} {item.token}
-            </Text>
-          }
-        />
-      )}
+            }
+            body={
+              <View>
+                <Text style={styles.title}>{item.type}</Text>
+                <View style={styles.row}>
+                  <Text
+                    style={[
+                      styles.status,
+                      // {
+                      //   backgroundColor:
+                      //     item.status.toLowerCase() === "success"
+                      //       ? Colors.success
+                      //       : item.status.toLowerCase() === "pending"
+                      //       ? Colors.pending
+                      //       : Colors.failed,
+                      // },
+                    ]}
+                  >
+                    {item.data !== "0x"
+                      ? ethers.utils.formatEther(
+                          new ethers.utils.Interface(
+                            ERC20_ABI
+                          ).decodeFunctionData("transfer", item.data)[1]
+                        )
+                      : "j"}
+                  </Text>
+                </View>
+              </View>
+            }
+            trailing={<Text>- {getAmountPaid(item)}</Text>}
+          />
+        );
+      }}
     />
   );
 };

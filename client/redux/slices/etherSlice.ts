@@ -1,11 +1,15 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import "react-native-get-random-values";
 import "@ethersproject/shims";
-import { BigNumber, BigNumberish, ethers, Wallet } from "ethers";
+import { BigNumber, BigNumberish, Contract, ethers, Wallet } from "ethers";
 import { RootState } from "../store";
-import { InitialStateAccount, NetworkInterface } from "../../utils/interfaces";
+import {
+  ImportedToken,
+  InitialStateAccount,
+  NetworkInterface,
+} from "../../utils/interfaces";
 import Helpers from "../../utils/helper";
-import { ACCOUNTS_LENGTH } from "../../utils/constants";
+import { ACCOUNTS_LENGTH, IMPORTED_TOKENS } from "../../utils/constants";
 
 const initialState: InitialStateAccount = {
   provider: new ethers.providers.JsonRpcProvider(),
@@ -20,6 +24,7 @@ const initialState: InitialStateAccount = {
     currencySymbol: "ETH",
   },
   wallets: [],
+  importedTokens: [],
 };
 
 export const getBalance = createAsyncThunk(
@@ -59,6 +64,13 @@ export const etherSlice = createSlice({
     removeWallet: (state) => {
       state.wallets.length = 0;
     },
+    addNewToken: (state, action: PayloadAction<ImportedToken>) => {
+      state.importedTokens.push(action.payload);
+      Helpers.storeData(IMPORTED_TOKENS, JSON.stringify(state.importedTokens));
+    },
+    setImportedTokens: (state, action: PayloadAction<Array<ImportedToken>>) => {
+      state.importedTokens = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -83,5 +95,7 @@ export const {
   changeActiveNetwork,
   addWallet,
   removeWallet,
+  addNewToken,
+  setImportedTokens
 } = etherSlice.actions;
 export default etherSlice.reducer;
