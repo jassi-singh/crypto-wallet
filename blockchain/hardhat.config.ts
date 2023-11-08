@@ -19,6 +19,24 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
   }
 });
 
+task("sendEth", "Send Eth to an address")
+  .addParam("address", "Add reciever address")
+  .addParam("amount", "amount in eth")
+  .setAction(async (taskArgs, hre) => {
+    const provider = new hre.ethers.providers.JsonRpcProvider();
+    const wallet = new hre.ethers.Wallet(
+      "0x701b615bbdfb9de65240bc28bd21bbc0d996645a3dd57e7b12bc2bdf6f192c82",
+      provider
+    );
+
+    const tx = await wallet.sendTransaction({
+      to: taskArgs.address,
+      value: hre.ethers.utils.parseEther(`${taskArgs.amount}`),
+    });
+
+    console.log(tx);
+  });
+
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
 

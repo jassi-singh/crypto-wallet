@@ -33,7 +33,10 @@ export const getBalance = createAsyncThunk(
     const state = getState() as RootState;
     const balanceOf = new Map<string, BigNumber>();
     const promises: Array<Promise<void>> = [];
-
+    state.ethers.provider.getNetwork().then((network) => console.log(network));
+    state.ethers.provider
+      .getBalance("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266")
+      .then((balance) => console.log(ethers.utils.formatEther(balance)));
     state.ethers.wallets.forEach((wallet) => {
       const promise = state.ethers.provider
         .getBalance(wallet.address)
@@ -78,6 +81,10 @@ export const etherSlice = createSlice({
         getBalance.fulfilled,
         (state, action: PayloadAction<Map<string, BigNumber>>) => {
           console.log("SUCCESS 🟢", action.payload);
+          action.payload.forEach((value, key) => {
+            console.log("key", key);
+            console.log("value", ethers.utils.formatEther(value));
+          });
           state.balanceOf = action.payload;
         }
       )
@@ -96,6 +103,6 @@ export const {
   addWallet,
   removeWallet,
   addNewToken,
-  setImportedTokens
+  setImportedTokens,
 } = etherSlice.actions;
 export default etherSlice.reducer;

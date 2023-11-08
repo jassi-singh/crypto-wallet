@@ -42,9 +42,8 @@ const LoginScreen = () => {
           dispatch(addWallet(wallet));
         }
         const importedTokensCache = await Helpers.getData(IMPORTED_TOKENS);
-        const importedTokens: Array<ImportedToken> = JSON.parse(
-          importedTokensCache!
-        );
+        const importedTokens: Array<ImportedToken> =
+          importedTokensCache == null ? [] : JSON.parse(importedTokensCache);
 
         dispatch(setImportedTokens(importedTokens));
         navigation.navigate("Home");
