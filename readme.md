@@ -30,6 +30,13 @@ This app can perform task like :
 6. Now use that address to send eth and token from the app.
 
 ## Screenshots
-![Image 1](screenshots/ss0.jpg) ![Image 2](screenshots/ss1.jpg) ![Image 3](screenshots/ss2.jpg)
 
-![Image 4](screenshots/ss3.jpg) ![Image 5](screenshots/ss4.jpg) ![Image 6](screenshots/ss5.jpg) ![Image 7](screenshots/ss6.jpg) 
+<div style="display:flex; justify:between"> 
+<img src="screenshots/ss0.png" width="30%" />
+<img src="screenshots/ss1.png" width="30%" />
+<img src="screenshots/ss2.png" width="30%" />
+<img src="screenshots/ss3.png" width="30%" />
+<img src="screenshots/ss4.png" width="30%" />
+<img src="screenshots/ss5.png" width="30%" />
+<img src="screenshots/ss6.png" width="30%" />
+</div>
